@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Proyecto Club Williams</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            margin: 0;
+        }
+        .login-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 350px;
+        }
+        h2 { text-align: center; color: #333; margin-bottom: 1.5rem; }
+        input {
+            display: block;
+            width: 100%;
+            margin-bottom: 1.2rem;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box; /* Evita que el input se salga del cuadro */
+        }
+        button {
+            width: 100%;
+            padding: 0.8rem;
+            background: #2575fc;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        button:hover { background: #1a5abd; }
+        .footer { text-align: center; margin-top: 1rem; font-size: 0.8rem; color: #777; }
+    </style>
+</head>
+<body>
+<div class="login-card">
+    <h2>Ingreso al Club</h2>
+    <form action="/api/usuarios/login" method="post">
+        <input type="text" name="username" placeholder="Nombre de usuario" required>
+        <input type="password" name="password" placeholder="Contraseña" required>
+        <button type="submit">Entrar</button>
+    </form>
+    <div class="footer">Parcial II - Williams</div>
+</div>
+</body>
+</html>

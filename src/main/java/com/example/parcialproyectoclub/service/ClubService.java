@@ -19,4 +19,12 @@ public class ClubService {
     public Club guardar(Club club) {
         return clubRepository.save(club);
     }
+
+    public void eliminar(Long id) {
+        clubRepository.deleteById(id);
+    }
+
+    public Club buscarPorId(Long id) {
+        return clubRepository.findById(id).orElse(null);
+    }
 }

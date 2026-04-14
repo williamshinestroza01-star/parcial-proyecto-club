@@ -1,7 +1,9 @@
 package com.example.parcialproyectoclub.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "clubes")
@@ -14,4 +16,6 @@ public class Club {
     private Long id;
 
     private String nombre;
+    private String ciudad;
+    private int anioFundacion;
 }
