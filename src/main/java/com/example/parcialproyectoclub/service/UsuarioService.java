@@ -26,9 +26,8 @@ public class UsuarioService {
 
     // Lógica de Login simple para 3er semestre
     public String autenticar(String username, String password) {
-        return usuarioRepository.findAll().stream()
-                .filter(u -> u.getUsername().equals(username) && u.getPassword().equals(password))
-                .findFirst()
+        return usuarioRepository.findByUsername(username)
+                .filter(u -> u.getPassword().equals(password))
                 .map(u -> "Login exitoso. Bienvenido " + u.getUsername())
                 .orElse("Credenciales incorrectas");
     }

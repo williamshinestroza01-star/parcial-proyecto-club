@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Club</title>
+    <style>
+        :root {
+            --bg: #f4f7fb;
+            --card: #ffffff;
+            --text: #1d2433;
+            --accent: #1769aa;
+            --border: #d8e0ec;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            margin: 0;
+            background: linear-gradient(160deg, #eef3f9 0%, #f8fbff 100%);
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+        }
+
+        h1, h2 {
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.92rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.6rem;
+            margin-top: 0.25rem;
+            border-radius: 8px;
+            border: 1px solid #c7d2e2;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 0.8rem;
+            background: var(--accent);
+            color: #fff;
+            border: 0;
+            border-radius: 8px;
+            padding: 0.65rem 0.9rem;
+            cursor: pointer;
+        }
+
+        ul {
+            padding-left: 1rem;
+        }
+
+        .links {
+            margin-top: 1rem;
+        }
+
+        .links a {
+            color: var(--accent);
+            text-decoration: none;
+            margin-right: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Proyecto Club</h1>
+    <p>Gestión básica de usuarios y clubes.</p>
+
+    <div class="links">
+        <a href="/swagger-ui.html" target="_blank">Swagger UI</a>
+        <a href="/api-docs" target="_blank">OpenAPI JSON</a>
+        <a href="/h2-console" target="_blank">H2 Console (dev)</a>
+    </div>
+
+    <div class="grid">
+        <section class="card">
+            <h2>Registrar usuario</h2>
+            <form method="post" action="/usuarios">
+                <label>Usuario
+                    <input type="text" name="username" required>
+                </label>
+                <label>Contraseña
+                    <input type="password" name="password" required>
+                </label>
+                <label>Rol
+                    <input type="text" name="rol" placeholder="admin, socio, etc." required>
+                </label>
+                <button type="submit">Guardar usuario</button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>Crear club</h2>
+            <form method="post" action="/clubes">
+                <label>Nombre del club
+                    <input type="text" name="nombre" required>
+                </label>
+                <button type="submit">Guardar club</button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>Usuarios</h2>
+            <ul>
+                <li th:if="${#lists.isEmpty(usuarios)}">Sin usuarios registrados.</li>
+                <li th:each="usuario : ${usuarios}">
+                    <strong th:text="${usuario.username}">usuario</strong>
+                    <span> - Rol: </span><span th:text="${usuario.rol}">rol</span>
+                </li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Clubes</h2>
+            <ul>
+                <li th:if="${#lists.isEmpty(clubes)}">Sin clubes registrados.</li>
+                <li th:each="club : ${clubes}" th:text="${club.nombre}">Club</li>
+            </ul>
+        </section>
+    </div>
+</div>
+</body>
+</html>
