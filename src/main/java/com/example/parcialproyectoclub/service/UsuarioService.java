@@ -4,7 +4,9 @@ import com.example.parcialproyectoclub.model.Usuario;
 import com.example.parcialproyectoclub.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -20,15 +22,11 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    public void eliminar(Long id) {
-        usuarioRepository.deleteById(id);
+    public Optional<Usuario> obtenerPorId(Long id) {
+        return usuarioRepository.findById(id);
     }
 
-    // Lógica de Login simple para 3er semestre
-    public String autenticar(String username, String password) {
-        return usuarioRepository.findByUsername(username)
-                .filter(u -> u.getPassword().equals(password))
-                .map(u -> "Login exitoso. Bienvenido " + u.getUsername())
-                .orElse("Credenciales incorrectas");
+    public void eliminar(Long id) {
+        usuarioRepository.deleteById(id);
     }
 }
