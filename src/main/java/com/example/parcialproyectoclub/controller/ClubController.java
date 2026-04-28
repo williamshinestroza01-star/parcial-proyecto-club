@@ -5,26 +5,29 @@ import com.example.parcialproyectoclub.service.ClubService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/clubes")
-@Tag(name = "Clubes", description = "Operaciones de clubes")
+@Tag(name = "Clubes", description = "API para la gestión de clubes - Parcial")
 public class ClubController {
 
     @Autowired
     private ClubService clubService;
 
     @GetMapping
-    @Operation(summary = "Listar clubes")
+    @Operation(summary = "Obtener todos los clubes")
     public List<Club> listar() {
         return clubService.listarTodos();
     }
 
-    @PostMapping
-    @Operation(summary = "Crear club")
-    public Club crear(@RequestBody Club club) {
-        return clubService.guardar(club);
+    @PostMapping("/crear")
+    @Operation(summary = "Registrar un nuevo club")
+    public ResponseEntity<Club> crear(@RequestBody Club club) {
+        Club nuevoClub = clubService.guardar(club);
+        return ResponseEntity.ok(nuevoClub);
     }
 }
