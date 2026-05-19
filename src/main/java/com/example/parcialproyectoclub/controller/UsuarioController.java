@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios")
+@CrossOrigin(origins = "*") // <-- CLAVE: Permite que tu frontend se conecte sin bloqueos
 @Tag(name = "Usuarios", description = "API para la gestión de usuarios")
 public class UsuarioController {
 
@@ -35,7 +36,8 @@ public class UsuarioController {
     public ResponseEntity<Usuario> actualizar(@PathVariable Long id, @RequestBody Usuario detalles) {
         return usuarioService.obtenerPorId(id).map(u -> {
             u.setNombre(detalles.getNombre());
-            u.setEmail(detalles.getEmail()); // Asegúrate de que tu modelo tenga 'email'
+            u.setContraseña(detalles.getContraseña()); // Adaptado a lo que se ve en tu interfaz
+            u.setRol(detalles.getRol());               // Adaptado a lo que se ve en tu interfaz
             return ResponseEntity.ok(usuarioService.guardar(u));
         }).orElse(ResponseEntity.notFound().build());
     }

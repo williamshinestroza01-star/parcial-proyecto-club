@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/clubes")
+@CrossOrigin(origins = "*") // <-- CLAVE: Permite que tu frontend se conecte sin bloqueos
 @Tag(name = "Clubes", description = "API para la gestión de clubes - Parcial")
 public class ClubController {
 
@@ -36,7 +37,6 @@ public class ClubController {
     public ResponseEntity<Club> actualizar(@PathVariable Long id, @RequestBody Club clubDetalles) {
         return clubService.obtenerPorId(id).map(club -> {
             club.setNombre(clubDetalles.getNombre());
-            // Si el modelo Club tiene más campos, se agregan aquí abajo
             Club actualizado = clubService.guardar(club);
             return ResponseEntity.ok(actualizado);
         }).orElse(ResponseEntity.notFound().build());
