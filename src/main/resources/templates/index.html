@@ -70,7 +70,35 @@
         }
 
         ul {
-            padding-left: 1rem;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f4f8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-edit {
+            background-color: #e28743;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.8rem;
+            margin-top: 0;
+        }
+
+        .btn-delete {
+            background-color: #d32f2f;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.8rem;
+            margin-top: 0;
         }
 
         .links {
@@ -127,8 +155,14 @@
             <ul>
                 <li th:if="${#lists.isEmpty(usuarios)}">Sin usuarios registrados.</li>
                 <li th:each="usuario : ${usuarios}">
-                    <strong th:text="${usuario.username}">usuario</strong>
-                    <span> - Rol: </span><span th:text="${usuario.rol}">rol</span>
+                    <div>
+                        <strong th:text="${usuario.username}">usuario</strong>
+                        <span> - Rol: </span><span th:text="${usuario.rol}">rol</span>
+                    </div>
+                    <div class="actions">
+                        <button class="btn-edit" th:onclick="'editarUsuario(' + ${usuario.id} + ', \'' + ${usuario.username} + '\', \'' + ${usuario.rol} + '\')'">Editar</button>
+                        <button class="btn-delete" th:onclick="'eliminarUsuario(' + ${usuario.id} + ')'">X</button>
+                    </div>
                 </li>
             </ul>
         </section>
@@ -137,10 +171,84 @@
             <h2>Clubes</h2>
             <ul>
                 <li th:if="${#lists.isEmpty(clubes)}">Sin clubes registrados.</li>
-                <li th:each="club : ${clubes}" th:text="${club.nombre}">Club</li>
+                <li th:each="club : ${clubes}">
+                    <span th:text="${club.nombre}">Club</span>
+                    <div class="actions">
+                        <button class="btn-edit" th:onclick="'editarClub(' + ${club.id} + ', \'' + ${club.nombre} + '\')'">Editar</button>
+                        <button class="btn-delete" th:onclick="'eliminarClub(' + ${club.id} + ')'">X</button>
+                    </div>
+                </li>
             </ul>
         </section>
     </div>
 </div>
+
+<script>
+    // URL base de tu backend desplegado en Railway
+    const API_BASE = "https://parcial-proyecto-club-production-6698.up.railway.app/api";
+
+    // --- ACCIONES PARA CLUBES ---
+    async function eliminarClub(id) {
+        if (confirm("¿De verdad querés eliminar este club?")) {
+            const res = await fetch(`${API_BASE}/clubes/eliminar/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                alert("Club eliminado correctamente");
+                location.reload();
+            } else {
+                alert("Error al eliminar el club");
+            }
+        }
+    }
+
+    async function editarClub(id, nombreActual) {
+        const nuevoNombre = prompt("Modificar nombre del club:", nombreActual);
+        if (nuevoNombre && nuevoNombre.trim() !== "") {
+            const res = await fetch(`${API_BASE}/clubes/actualizar/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre: nuevoNombre })
+            });
+            if (res.ok) {
+                alert("Club actualizado");
+                location.reload();
+            }
+        }
+    }
+
+    // --- ACCIONES PARA USUARIOS ---
+    async function eliminarUsuario(id) {
+        if (confirm("¿Seguro que querés eliminar este usuario?")) {
+            const res = await fetch(`${API_BASE}/usuarios/eliminar/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                alert("Usuario eliminado correctamente");
+                location.reload();
+            } else {
+                alert("Error al eliminar el usuario");
+            }
+        }
+    }
+
+    async function editarUsuario(id, usernameActual, rolActual) {
+        const nuevoUsername = prompt("Modificar nombre de usuario:", usernameActual);
+        const nuevoRol = prompt("Modificar rol:", rolActual);
+
+        if (nuevoUsername && nuevoRol) {
+            const res = await fetch(`${API_BASE}/usuarios/actualizar/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: nuevoUsername,
+                    nombre: nuevoUsername, // Tu controlador pide nombre, le mandamos el mismo
+                    rol: nuevoRol,
+                    password: "no_cambiada" // Le mandamos un valor por defecto para no romper el modelo
+                })
+            });
+            if (res.ok) {
+                alert("Usuario actualizado");
+                location.reload();
+            }
+        }
+    }
+</script>
 </body>
 </html>
