@@ -1,55 +1,46 @@
-package com.example.parcialproyectoclub.controller;
+package com.example.parcialproyectoclub.model;
 
-import com.example.parcialproyectoclub.model.Usuario;
-import com.example.parcialproyectoclub.service.UsuarioService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import jakarta.persistence.*;
 
-import java.util.List;
+@Entity
+@Table(name = "usuarios")
+public class Usuario {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-@RestController
-@RequestMapping("/api/usuarios")
-@CrossOrigin(origins = "*") // Permite la conexión con el frontend sin bloqueos de seguridad
-@Tag(name = "Usuarios", description = "API para la gestión de usuarios")
-public class UsuarioController {
+    private String nombre;
+    private String email;
+    private String username;
+    private String password;
+    private String rol;
 
-    @Autowired
-    private UsuarioService usuarioService;
+    public Usuario() {}
 
-    @GetMapping
-    @Operation(summary = "Listar todos los usuarios")
-    public List<Usuario> listar() {
-        return usuarioService.listarTodos();
+    public Usuario(Long id, String nombre, String email, String username, String password, String rol) {
+        this.id = id;
+        this.nombre = nombre;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.rol = rol;
     }
 
-    @PostMapping("/crear")
-    @Operation(summary = "Crear un nuevo usuario")
-    public ResponseEntity<Usuario> crear(@RequestBody Usuario usuario) {
-        return ResponseEntity.ok(usuarioService.guardar(usuario));
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    @PutMapping("/actualizar/{id}")
-    @Operation(summary = "Actualizar un usuario")
-    public ResponseEntity<Usuario> actualizar(@PathVariable Long id, @RequestBody Usuario detalles) {
-        return usuarioService.obtenerPorId(id).map(u -> {
-            // Usamos los nombres exactos de tus variables en el modelo Usuario
-            u.setNombre(detalles.getNombre());
-            u.setEmail(detalles.getEmail());
-            u.setUsername(detalles.getUsername());
-            u.setPassword(detalles.getPassword());
-            u.setRol(detalles.getRol());
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-            return ResponseEntity.ok(usuarioService.guardar(u));
-        }).orElse(ResponseEntity.notFound().build());
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    @DeleteMapping("/eliminar/{id}")
-    @Operation(summary = "Eliminar un usuario")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        usuarioService.eliminar(id);
-        return ResponseEntity.noContent().build();
-    }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    public String getRol() { return rol; }
+    public void setRol(String rol) { this.rol = rol; }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/clubes")
-@CrossOrigin(origins = "*") // <-- CLAVE: Permite que tu frontend se conecte sin bloqueos
+@CrossOrigin(origins = "*")
 @Tag(name = "Clubes", description = "API para la gestión de clubes - Parcial")
 public class ClubController {
 
@@ -20,20 +20,17 @@ public class ClubController {
     private ClubService clubService;
 
     @GetMapping
-    @Operation(summary = "Obtener todos los clubes")
     public List<Club> listar() {
         return clubService.listarTodos();
     }
 
     @PostMapping("/crear")
-    @Operation(summary = "Registrar un nuevo club")
     public ResponseEntity<Club> crear(@RequestBody Club club) {
         Club nuevoClub = clubService.guardar(club);
         return ResponseEntity.ok(nuevoClub);
     }
 
     @PutMapping("/actualizar/{id}")
-    @Operation(summary = "Actualizar un club")
     public ResponseEntity<Club> actualizar(@PathVariable Long id, @RequestBody Club clubDetalles) {
         return clubService.obtenerPorId(id).map(club -> {
             club.setNombre(clubDetalles.getNombre());
@@ -43,7 +40,6 @@ public class ClubController {
     }
 
     @DeleteMapping("/eliminar/{id}")
-    @Operation(summary = "Eliminar un club")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         clubService.eliminar(id);
         return ResponseEntity.noContent().build();

@@ -4,6 +4,7 @@ import com.example.parcialproyectoclub.model.Club;
 import com.example.parcialproyectoclub.model.Usuario;
 import com.example.parcialproyectoclub.service.ClubService;
 import com.example.parcialproyectoclub.service.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,13 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 public class WebController {
 
-    private final UsuarioService usuarioService;
-    private final ClubService clubService;
+    @Autowired
+    private UsuarioService usuarioService;
 
-    public WebController(UsuarioService usuarioService, ClubService clubService) {
-        this.usuarioService = usuarioService;
-        this.clubService = clubService;
-    }
+    @Autowired
+    private ClubService clubService;
 
     @GetMapping
     public String index(Model model) {
