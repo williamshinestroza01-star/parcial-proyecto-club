@@ -21,14 +21,14 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 1rem;
         }
 
@@ -50,13 +50,14 @@
             font-size: 0.92rem;
         }
 
-        input {
+        input, select {
             width: 100%;
             padding: 0.6rem;
             margin-top: 0.25rem;
             border-radius: 8px;
             border: 1px solid #c7d2e2;
             box-sizing: border-box;
+            background-color: #fff;
         }
 
         button {
@@ -117,7 +118,7 @@
 <body>
 <div class="container">
     <h1>Proyecto Club</h1>
-    <p>Gestion basica de usuarios y clubes.</p>
+    <p>Gestión completa de usuarios, clubes, jugadores y entrenadores (Estructura UML Completa).</p>
 
     <div class="links">
         <a href="/swagger-ui.html" target="_blank">Swagger UI</a>
@@ -128,21 +129,21 @@
     <div class="grid">
         <section class="card">
             <h2>Registrar usuario</h2>
-            <form method="post" action="/usuarios">
+            <form id="form-usuario">
                 <label>Nombre
-                    <input type="text" name="nombre" required>
+                    <input type="text" id="u-nombre" required>
                 </label>
                 <label>Email
-                    <input type="email" name="email">
+                    <input type="email" id="u-email">
                 </label>
                 <label>Usuario
-                    <input type="text" name="username" required>
+                    <input type="text" id="u-username" required>
                 </label>
-                <label>Contrasena
-                    <input type="password" name="password" required>
+                <label>Contraseña
+                    <input type="password" id="u-password" required>
                 </label>
                 <label>Rol
-                    <input type="text" name="rol" placeholder="admin, socio, etc." required>
+                    <input type="text" id="u-rol" placeholder="admin, socio, etc." required>
                 </label>
                 <button type="submit">Guardar usuario</button>
             </form>
@@ -150,11 +151,64 @@
 
         <section class="card">
             <h2>Crear club</h2>
-            <form method="post" action="/clubes">
+            <form id="form-club">
                 <label>Nombre del club
-                    <input type="text" name="nombre" required>
+                    <input type="text" id="c-nombre" required>
                 </label>
                 <button type="submit">Guardar club</button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>Registrar jugador</h2>
+            <form id="form-jugador">
+                <label>Nombre
+                    <input type="text" id="j-nombre" required>
+                </label>
+                <label>Edad
+                    <input type="number" id="j-edad" required>
+                </label>
+                <label>Número Camiseta
+                    <input type="number" id="j-numero" required>
+                </label>
+                <label>Posición
+                    <input type="text" id="j-posicion" required>
+                </label>
+                <label>Categoría
+                    <select id="j-categoria" required>
+                        <option th:each="cat : ${T(com.example.parcialproyectoclub.model.Categoria).values()}"
+                                th:value="${cat}" th:text="${cat}"></option>
+                    </select>
+                </label>
+                <label>Club
+                    <select id="j-club" required>
+                        <option value="">Seleccione un club...</option>
+                        <option th:each="club : ${clubes}" th:value="${club.id}" th:text="${club.nombre}"></option>
+                    </select>
+                </label>
+                <button type="submit">Guardar jugador</button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>Registrar entrenador</h2>
+            <form id="form-entrenador">
+                <label>Nombre
+                    <input type="text" id="e-nombre" required>
+                </label>
+                <label>Años de Experiencia
+                    <input type="number" id="e-experiencia" required>
+                </label>
+                <label>Especialidad
+                    <input type="text" id="e-especialidad" placeholder="Táctico, Físico, etc." required>
+                </label>
+                <label>Club Asociado
+                    <select id="e-club" required>
+                        <option value="">Seleccione un club...</option>
+                        <option th:each="club : ${clubes}" th:value="${club.id}" th:text="${club.nombre}"></option>
+                    </select>
+                </label>
+                <button type="submit">Guardar entrenador</button>
             </form>
         </section>
 
@@ -201,70 +255,199 @@
                 </li>
             </ul>
         </section>
+
+        <section class="card">
+            <h2>Jugadores</h2>
+            <ul>
+                <li th:if="${#lists.isEmpty(jugadores)}">Sin jugadores registrados.</li>
+                <li th:each="jugador : ${jugadores}">
+                    <div>
+                        <strong th:text="${jugador.nombre}">Jugador</strong>
+                        <span> (#<span th:text="${jugador.numero}">0</span>)</span><br>
+                        <small>Pos: <span th:text="${jugador.posicion}">-</span> | Cat: <span th:text="${jugador.categoria}">-</span></small><br>
+                        <small th:if="${jugador.club != null}">Club: <span th:text="${jugador.club.nombre}">-</span></small>
+                    </div>
+                    <div class="actions">
+                        <button class="btn-edit js-edit-jugador"
+                                th:data-id="${jugador.id}"
+                                th:data-nombre="${jugador.nombre}"
+                                th:data-edad="${jugador.edad}"
+                                th:data-numero="${jugador.numero}"
+                                th:data-posicion="${jugador.posicion}"
+                                th:data-categoria="${jugador.categoria}"
+                                th:data-clubid="${jugador.club != null ? jugador.club.id : ''}"
+                                type="button">Editar</button>
+                        <button class="btn-delete js-delete-jugador"
+                                th:data-id="${jugador.id}"
+                                type="button">X</button>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Entrenadores</h2>
+            <ul>
+                <li th:if="${#lists.isEmpty(entrenadores)}">Sin entrenadores registrados.</li>
+                <li th:each="entrenador : ${entrenadores}">
+                    <div>
+                        <strong th:text="${entrenador.nombre}">Entrenador</strong><br>
+                        <small>Exp: <span th:text="${entrenador.experiencia}">0</span> años | Esp: <span th:text="${entrenador.especialidad}">-</span></small><br>
+                        <small th:if="${entrenador.club != null}">Club: <span th:text="${entrenador.club.nombre}">-</span></small>
+                    </div>
+                    <div class="actions">
+                        <button class="btn-edit js-edit-entrenador"
+                                th:data-id="${entrenador.id}"
+                                th:data-nombre="${entrenador.nombre}"
+                                th:data-experiencia="${entrenador.experiencia}"
+                                th:data-especialidad="${entrenador.especialidad}"
+                                th:data-clubid="${entrenador.club != null ? entrenador.club.id : ''}"
+                                type="button">Editar</button>
+                        <button class="btn-delete js-delete-entrenador"
+                                th:data-id="${entrenador.id}"
+                                type="button">X</button>
+                    </div>
+                </li>
+            </ul>
+        </section>
     </div>
 </div>
 
 <script>
     const API_BASE = `${window.location.origin}/api`;
 
+    // --- EVENTOS DE CLUBES ---
     document.querySelectorAll(".js-delete-club").forEach((button) => {
         button.addEventListener("click", () => eliminarClub(button.dataset.id));
     });
-
     document.querySelectorAll(".js-edit-club").forEach((button) => {
         button.addEventListener("click", () => editarClub(button.dataset.id, button.dataset.nombre));
     });
 
+    const formClub = document.getElementById("form-club");
+    if(formClub) {
+        formClub.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const res = await fetch(`${API_BASE}/clubes/guardar`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    nombre: document.getElementById("c-nombre").value
+                })
+            });
+            if (res.ok) location.reload();
+            else alert("Error al guardar el club");
+        });
+    }
+
+    // --- EVENTOS DE USUARIOS ---
     document.querySelectorAll(".js-delete-usuario").forEach((button) => {
         button.addEventListener("click", () => eliminarUsuario(button.dataset.id));
     });
-
     document.querySelectorAll(".js-edit-usuario").forEach((button) => {
         button.addEventListener("click", () => editarUsuario(button.dataset));
     });
 
-    async function eliminarClub(id) {
-        if (!confirm("Seguro que quieres eliminar este club?")) {
-            return;
-        }
+    const formUsuario = document.getElementById("form-usuario");
+    if(formUsuario) {
+        formUsuario.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const res = await fetch(`${API_BASE}/usuarios/guardar`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    nombre: document.getElementById("u-nombre").value,
+                    email: document.getElementById("u-email").value,
+                    username: document.getElementById("u-username").value,
+                    password: document.getElementById("u-password").value,
+                    rol: document.getElementById("u-rol").value
+                })
+            });
+            if (res.ok) location.reload();
+            else alert("Error al guardar el usuario");
+        });
+    }
 
+    // --- EVENTOS DE JUGADORES ---
+    document.querySelectorAll(".js-delete-jugador").forEach((button) => {
+        button.addEventListener("click", () => eliminarJugador(button.dataset.id));
+    });
+    document.querySelectorAll(".js-edit-jugador").forEach((button) => {
+        button.addEventListener("click", () => editarJugador(button.dataset));
+    });
+
+    const formJugador = document.getElementById("form-jugador");
+    if(formJugador) {
+        formJugador.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const res = await fetch(`${API_BASE}/jugadores/guardar`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    nombre: document.getElementById("j-nombre").value,
+                    edad: parseInt(document.getElementById("j-edad").value),
+                    numero: parseInt(document.getElementById("j-numero").value),
+                    posicion: document.getElementById("j-posicion").value,
+                    categoria: document.getElementById("j-categoria").value,
+                    club: { id: parseInt(document.getElementById("j-club").value) }
+                })
+            });
+            if (res.ok) location.reload();
+            else alert("Error al guardar el jugador");
+        });
+    }
+
+    // --- EVENTOS DE ENTRENADORES ---
+    document.querySelectorAll(".js-delete-entrenador").forEach((button) => {
+        button.addEventListener("click", () => eliminarEntrenador(button.dataset.id));
+    });
+    document.querySelectorAll(".js-edit-entrenador").forEach((button) => {
+        button.addEventListener("click", () => editarEntrenador(button.dataset));
+    });
+
+    const formEntrenador = document.getElementById("form-entrenador");
+    if(formEntrenador) {
+        formEntrenador.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const res = await fetch(`${API_BASE}/entrenadores/guardar`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    nombre: document.getElementById("e-nombre").value,
+                    experiencia: parseInt(document.getElementById("e-experiencia").value),
+                    especialidad: document.getElementById("e-especialidad").value,
+                    club: { id: parseInt(document.getElementById("e-club").value) }
+                })
+            });
+            if (res.ok) location.reload();
+            else alert("Error al guardar el entrenador");
+        });
+    }
+
+    // --- FUNCIONES AJAX ---
+    async function eliminarClub(id) {
+        if (!confirm("Seguro que quieres eliminar este club?")) return;
         const res = await fetch(`${API_BASE}/clubes/eliminar/${id}`, {method: "DELETE"});
-        if (res.ok) {
-            location.reload();
-            return;
-        }
+        if (res.ok) { location.reload(); return; }
         alert("Error al eliminar el club");
     }
 
     async function editarClub(id, nombreActual) {
         const nuevoNombre = prompt("Modificar nombre del club:", nombreActual || "");
-        if (!nuevoNombre || nuevoNombre.trim() === "") {
-            return;
-        }
-
+        if (!nuevoNombre || !nuevoNombre.trim()) return;
         const res = await fetch(`${API_BASE}/clubes/actualizar/${id}`, {
             method: "PUT",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({nombre: nuevoNombre.trim()})
         });
-
-        if (res.ok) {
-            location.reload();
-            return;
-        }
+        if (res.ok) { location.reload(); return; }
         alert("Error al actualizar el club");
     }
 
     async function eliminarUsuario(id) {
-        if (!confirm("Seguro que quieres eliminar este usuario?")) {
-            return;
-        }
-
+        if (!confirm("Seguro que quieres eliminar este usuario?")) return;
         const res = await fetch(`${API_BASE}/usuarios/eliminar/${id}`, {method: "DELETE"});
-        if (res.ok) {
-            location.reload();
-            return;
-        }
+        if (res.ok) { location.reload(); return; }
         alert("Error al eliminar el usuario");
     }
 
@@ -273,11 +456,7 @@
         const email = prompt("Modificar email:", usuario.email || "");
         const username = prompt("Modificar nombre de usuario:", usuario.username || "");
         const rol = prompt("Modificar rol:", usuario.rol || "");
-
-        if (!nombre || !username || !rol) {
-            return;
-        }
-
+        if (!nombre || !username || !rol) return;
         const res = await fetch(`${API_BASE}/usuarios/actualizar/${usuario.id}`, {
             method: "PUT",
             headers: {"Content-Type": "application/json"},
@@ -288,12 +467,66 @@
                 rol: rol.trim()
             })
         });
-
-        if (res.ok) {
-            location.reload();
-            return;
-        }
+        if (res.ok) { location.reload(); return; }
         alert("Error al actualizar el usuario");
+    }
+
+    async function eliminarJugador(id) {
+        if (!confirm("¿Seguro que quieres eliminar este jugador?")) return;
+        const res = await fetch(`${API_BASE}/jugadores/eliminar/${id}`, {method: "DELETE"});
+        if (res.ok) { location.reload(); return; }
+        alert("Error al eliminar el jugador");
+    }
+
+    async function editarJugador(data) {
+        const nombre = prompt("Modificar nombre:", data.nombre || "");
+        const edad = prompt("Modificar edad:", data.edad || "");
+        const numero = prompt("Modificar número camiseta:", data.numero || "");
+        const posicion = prompt("Modificar posición:", data.posicion || "");
+        const categoria = prompt("Modificar categoría (Junior, Media, Mayor):", data.categoria || "");
+        const clubId = prompt("Modificar ID del Club asociado:", data.clubid || "");
+        if (!nombre || !edad || !numero || !posicion || !categoria || !clubId) return;
+        const res = await fetch(`${API_BASE}/jugadores/actualizar/${data.id}`, {
+            method: "PUT",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                nombre: nombre.trim(),
+                edad: parseInt(edad),
+                numero: parseInt(numero),
+                posicion: posicion.trim(),
+                categoria: categoria.trim(),
+                club: { id: parseInt(clubId) }
+            })
+        });
+        if (res.ok) { location.reload(); return; }
+        alert("Error al actualizar el jugador.");
+    }
+
+    async function eliminarEntrenador(id) {
+        if (!confirm("¿Seguro que quieres eliminar este entrenador?")) return;
+        const res = await fetch(`${API_BASE}/entrenadores/eliminar/${id}`, {method: "DELETE"});
+        if (res.ok) { location.reload(); return; }
+        alert("Error al eliminar el entrenador");
+    }
+
+    async function editarEntrenador(data) {
+        const nombre = prompt("Modificar nombre:", data.nombre || "");
+        const experiencia = prompt("Modificar años de experiencia:", data.experiencia || "");
+        const specialty = prompt("Modificar especialidad:", data.especialidad || "");
+        const clubId = prompt("Modificar ID del Club asociado:", data.clubid || "");
+        if (!nombre || !experiencia || !specialty || !clubId) return;
+        const res = await fetch(`${API_BASE}/entrenadores/actualizar/${data.id}`, {
+            method: "PUT",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                nombre: nombre.trim(),
+                experiencia: parseInt(experiencia),
+                especialidad: specialty.trim(),
+                club: { id: parseInt(clubId) }
+            })
+        });
+        if (res.ok) { location.reload(); return; }
+        alert("Error al actualizar el entrenador.");
     }
 </script>
 </body>

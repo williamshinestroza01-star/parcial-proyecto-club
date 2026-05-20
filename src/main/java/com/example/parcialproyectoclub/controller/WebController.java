@@ -1,44 +1,43 @@
 package com.example.parcialproyectoclub.controller;
 
-import com.example.parcialproyectoclub.model.Club;
-import com.example.parcialproyectoclub.model.Usuario;
 import com.example.parcialproyectoclub.service.ClubService;
 import com.example.parcialproyectoclub.service.UsuarioService;
+import com.example.parcialproyectoclub.service.JugadorService;
+import com.example.parcialproyectoclub.service.EntrenadorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/")
 public class WebController {
+
+    @Autowired
+    private ClubService clubService;
 
     @Autowired
     private UsuarioService usuarioService;
 
     @Autowired
-    private ClubService clubService;
+    private JugadorService jugadorService;
 
-    @GetMapping
+    @Autowired
+    private EntrenadorService entrenadorService;
+
+    @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("usuarios", usuarioService.listarTodos());
+        // 1. Enviamos los clubes
         model.addAttribute("clubes", clubService.listarTodos());
-        model.addAttribute("nuevoUsuario", new Usuario());
-        model.addAttribute("nuevoClub", new Club());
-        return "index";
-    }
 
-    @PostMapping("/usuarios")
-    public String crearUsuario(Usuario usuario) {
-        usuarioService.guardar(usuario);
-        return "redirect:/";
-    }
+        // 2. Enviamos los usuarios
+        model.addAttribute("usuarios", usuarioService.listarTodos());
 
-    @PostMapping("/clubes")
-    public String crearClub(Club club) {
-        clubService.guardar(club);
-        return "redirect:/";
+        // 3. Enviamos los jugadores (Corregido de obtenerTodos a listarTodos)
+        model.addAttribute("jugadores", jugadorService.listarTodos());
+
+        // 4. Enviamos los entrenadores
+        model.addAttribute("entrenadores", entrenadorService.listarTodos());
+
+        return "index"; // Abre index.html
     }
 }
