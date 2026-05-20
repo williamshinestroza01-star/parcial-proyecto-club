@@ -4,6 +4,13 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "usuarios")
+import lombok.*;
+
+@Entity
+@Table(name = "usuarios")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,4 +50,5 @@ public class Usuario {
 
     public String getRol() { return rol; }
     public void setRol(String rol) { this.rol = rol; }
+}
 }
