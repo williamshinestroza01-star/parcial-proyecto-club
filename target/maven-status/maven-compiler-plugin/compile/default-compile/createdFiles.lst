@@ -1,0 +1,11 @@
+com\example\parcialproyectoclub\config\OpenApiConfig.class
+com\example\parcialproyectoclub\repository\UsuarioRepository.class
+com\example\parcialproyectoclub\controller\WebController.class
+com\example\parcialproyectoclub\model\Club.class
+com\example\parcialproyectoclub\controller\UsuarioController.class
+com\example\parcialproyectoclub\controller\ClubController.class
+com\example\parcialproyectoclub\service\UsuarioService.class
+com\example\parcialproyectoclub\model\Usuario.class
+com\example\parcialproyectoclub\service\ClubService.class
+com\example\parcialproyectoclub\ParcialProyectoClubApplication.class
+com\example\parcialproyectoclub\repository\ClubRepository.class

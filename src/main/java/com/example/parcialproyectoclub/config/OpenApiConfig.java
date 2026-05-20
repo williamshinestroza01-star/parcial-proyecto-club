@@ -13,7 +13,7 @@ public class OpenApiConfig {
     public OpenAPI parcialProyectoClubOpenApi() {
         return new OpenAPI().info(new Info()
                 .title("API Proyecto Club")
-                .description("Gestión básica de usuarios y clubes")
+                .description("Gestion basica de usuarios y clubes")
                 .version("1.0.0")
                 .contact(new Contact().name("Equipo Proyecto Club")));
     }
